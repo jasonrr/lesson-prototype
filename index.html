@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Art History</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet/less" href="less/bootstrap.less">
+
+        <script src="js/less.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="js/handlebars.js"></script>
+        <script src="js/underscore.js"></script>
+        <script src="js/backbone.js"></script>
+        <script src="js/bootstrap.js"></script>
+
+    </head>
+
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="/">Lessons</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row-fluid visible-desktop hidden-phone hidden-tablet">
+                <div class="span9">
+                    <div class="nodeList">
+                        blahblha
+                    
+                    </div>
+                    {{> nodePane }}
+                </div>
+                <div class="span3">
+                    {{> tabPane }}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
