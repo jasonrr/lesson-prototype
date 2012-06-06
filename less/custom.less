@@ -1,17 +1,171 @@
 body {
-    padding-top: 60px;
+    padding-top: 40px;
 }
 
-.node-list {
-    background: @grayLight;
+#viewer {
+    position: absolute;
+    top: 40px; // to account for top navbar 
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#panel-holder {
+
+    position: relative;
+    height: 100%;
+    width: 2000px;
+
+    .resize {
+        width: 20px;
+        // box-shadow: inset 1px 0px 10px @grayLight;
+        background-color: @grayLighter;
+
+        &:hover {
+            background-color: lighten(@green, 30%);
+        }
+    }
+
+    .panel {
+
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        overflow-y: scroll;
+        box-sizing: border-box;
+        
+        &#sidebar {
+            width: 400px;
+            overflow-y: scroll;
+
+            .sidebar-section {
+                margin: 10px;
+                border-radius: 5px;
+                background-color: white;
+                box-shadow: 2px 2px 5px @grayLight;
+                
+
+                .sidebar-module-heading {
+                    padding: 20px;
+                    border-bottom: 3px solid @grayLighter;
+                }
+
+                .sidebar-module-title {
+                    font-weight: bold;
+                    display: block;
+                    height: 100%;
+                }
+
+                .sidebar-module-index {
+                    float: left;
+                    display: block;
+                    text-align: center;
+                    font-size: 20px;
+                    height: 100%;
+                    margin-right: 10px;
+                    padding: 10px;
+                    background-color: @blue;
+                    color: white;
+                    border-radius: 5px;
+                }
+
+                .sidebar-module-body {
+                    padding: 20px;
+                }
+
+                ul {
+                    width: 100%;
+                }
+
+                .sidebar-node {
+                    display: block;
+                    width: 100%;
+
+                }
+
+                li {
+                    margin: 10px 0px;
+                    display: block;
+                }
+
+                i {
+                    height: 40px;
+                    width: 30px;
+                    font-size: 30px;
+                    margin-right: 10px;
+                    color: @blue;
+                }
+
+            }
+
+            div, p, label, h3  {
+                font-size: 18px;
+            }
+        }
+
+        &#main {
+            left: 420px;
+            width: 800px;
+            padding: 40px 0px;
+
+            div, p, label {
+                font-size: 18px;
+                line-height: 28px;
+            }
+
+            .module-heading {
+                padding: 20px 30px;
+                margin-bottom: 30px;
+                margin-right: 10px;
+                border-radius: 5px;
+                background-color: white;
+                box-shadow: 2px 2px 5px @grayLight;
+            }
+
+            .node {
+                padding: 20px 30px;
+                margin-bottom: 30px;
+                margin-right: 10px;
+                border-radius: 5px;
+                background-color: white;
+                box-shadow: 2px 2px 5px @grayLight;
+            }
+
+            .module {
+                margin-bottom: 100px;
+            }
+        }
+
+        &#extra {
+            left: 1240px;
+            width: 500px;
+            margin: 40px 10px;
+            // background-color: white;
+        }
+    }
+}
+
+// scrollbar
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(0,128,200,0.1);
 }
 
 // apollonian gasket
 .circle {
-fill: none;
-stroke-width: 1px;
-stroke: black;
+    fill: none;
+    stroke-width: 1px;
+    stroke: black;
 }
 .draggable {
-fill: red;
+    fill: red;
 }

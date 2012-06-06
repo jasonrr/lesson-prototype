@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Art History</title>
+        <title>Linear Perspective</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <link rel="stylesheet/less" href="less/bootstrap.less">
@@ -15,174 +15,136 @@
         <script src="js/backbone.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/d3.min.js"></script>
-        <script src="js/apollonian-gasket.js"></script>
         <script src="js/sample-lesson.js"></script>
 
-        <script id="video-template" type="text/x-handlebars-template">
-            <div>
-                HI THERE.
-                <iframe width="853" height="480" src="{{ this.src }}" frameborder="0" allowfullscreen></iframe>
+        <script id="sidebar-template" type="text/x-handlebars-template">
+            {{#eachIndexed modules}}
+            <div class="sidebar-section" id="module{{ index }}heading">
+                <div class="sidebar-module-heading">
+                    <div class="sidebar-module-index">{{ index }}</div>
+                    <div class="sidebar-module-title">{{ title }}</div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="sidebar-module-body" id="module{{index}}body">
+                    <ul class="unstyled">
+                        {{#each nodes}}
+                        <li class="sidebar-node clearfix">
+                            <i class="{{ icon }} pull-left"></i>
+                            <span>{{ title }}</span>
+                            <i class="icon-ok pull-right"></i>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            {{/eachIndexed}}
+        </script>
+
+        <script id="video-node-partial" type="text/x-handlebars-template">
+           <iframe width="700" height="520" src="http://www.youtube.com/embed/{{ youtubeID }}" frameborder="0" allowfullscreen>
+           </iframe>
+        </script>
+
+        <script id="exploration-node-partial" type="text/x-handlebars-template">
+            <div class="exploration-prompt">
+                {{ prompt }}
+            </div>
+            <div class="exploration-problem">
+                {{{ html }}}
             </div>
         </script>
 
-        <script id="exploration-template" type="text/x-handlebars-template">
-            Exploration!!
-            <div id="vis">
-            {{ name }}
+        <script id="exercise-node-partial" type="text/x-handlebars-template">
+            <div class="exercise-prompt">
+                {{ prompt }}
+            </div>
+            <div class="exercise-problem">
+                {{{ html }}}
             </div>
         </script>
 
-        <style type="text/css">
+        <script id="quiz-node-partial" type="text/x-handlebars-template">
+            <form>
+                {{#each problems}}
+                    {{> multiple-choice }}
+                {{/each}}
+                <button type="submit" class="btn btn-large">Check Answers</button>
+            </form>
+        </script>
 
-            .meat {
-                position: relative;
-            }
+        <script id="multiple-choice-partial" type="text/x-handlebars-template">
+            <div class="quiz-problem">
+                <h3>Problem</h3>
+                <p>{{ prompt }}</p>
+                {{#each options}}
+                <label class="radio">
+                    <input type="radio"> {{ content }}
+                </label>
+                {{/each}}
+            </div>
+        </script>
 
-            .sidebar, .node, .extra {
-                background-color: white;
-                border-radius: 5px;
-                box-sizing: border-box;
-                box-shadow: 1px 1px 6px #ccc;
-            }
+        <script id="glue-node-partial" type="text/x-handlebars-template">
+            <div>{{ content }}</div>
+        </script>
 
-            .sticky-wrapper {
-                width: 380px;
-                float: left;
-            }
+        <script id="text-node-partial" type="text/x-handlebars-template">
+            <div>{{ content }}</div>
+        </script>
 
-            .sidebar {
-                padding: 30px 20px;
-                font-size: 30px;
-                line-height: 30px;
-                position: absolute;
-                width: 380px;
-                background-color: white;
-            }
+        <script id="main-template" type="text/x-handlebars-template">
+            
+            {{#eachIndexed modules}}
+            <div class="module">
+                <div class="module-heading">
+                    <h1>{{ index }}. {{ title }}</h1>
+                </div>
+                {{#each nodes}}
+                <div class="node">
+                    <h2>{{ title }}</h2>
+                    <div class="node-content node-{{ nodeType }}">
+                        {{#equal nodeType "video" }}
+                            {{> video-node }}
+                        {{/equal}}
+                        {{#equal nodeType "exploration" }}
+                            {{> exploration-node }}
+                        {{/equal}}
+                        {{#equal nodeType "exercise" }}
+                            {{> exercise-node }}
+                        {{/equal}}
+                        {{#equal nodeType "quiz" }}
+                            {{> quiz-node }}
+                        {{/equal}}
+                        {{#equal nodeType "glue" }}
+                            {{> glue-node }}
+                        {{/equal}}
+                        {{#equal nodeType "text" }}
+                            {{> text-node }}
+                        {{/equal}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{/eachIndexed}}
+        </script>
 
-            .main {
-                position: absolute;
-                width: 940px;
-                left: 400px;
-            }
-
-            .extra {
-                padding: 30px;
-                position: absolute;
-                width: 940px;
-                left: 1360px; /* sidebar + main + 2 * 20 */
-                font-size: 20px;
-                line-height: 32px;
-            }
-
-            ul.navlist li {
-                padding: 30px 0px;
-                background-color: white;
-                margin-bottom: 5px;
-                border-radius: 5px;
-                border-bottom: 1px solid #eee;
-                /*box-shadow: 1px 1px 6px #ccc;*/
-            }
-
-            ul.navlist li.completed a {
-                color: #ccc;
-                background-color: #fff;
-            }
-
-            ul.navlist li a {
-                display: block;
-                color: black;
-            }
-
-            ul.navlist li a:hover {
-                text-decoration: none;
-                color: #999;
-            }
-
-            .success {
-                color: #049cdb;
-            }
-
-            i {
-                font-size: 40px;
-            }
-
-            .node {
-                padding: 30px;
-                margin-bottom: 20px;
-                color: black;
-                /*background-color: #;*/
-            }
-
-            .question {
-                margin-bottom: 50px;
-            }
-
-            h2, p, div {
-                margin-bottom: 10px;
-            }
-
-            .node p, .node div, input, label, button.btn-large {
-                font-size: 24px;
-                line-height: 36px;
-            }
-
-            button.btn-large {
-                margin-top: 10px;
-            }
-
-            .radio input[type="radio"],
-            .checkbox input[type="checkbox"] {
-                margin-top: 10px;
-                margin-right: 20px;
-                margin-left: 1px;
-            }
-
-            .node-video {
-                text-align: center;
-            }
-
-            .node-video iframe {
-                background: black;
-                padding: 10px;
-                border-radius: 5px;
-            }
-
-            .node.selected {
-                background-color: blue;
-            }
-
-            /* needs to be removed */
-            .figure {
-                text-align: center;
-            }
-
-            .figure img {
-                padding: 50px;
-                width: 80%;
-                height: 80%;
-            }
-
-            #notifications {
-                top: 40px;
-            }
-
-            #notifications .navbar-inner {
-                background: #049cdb;
-                font-size: 24px;
-                line-height: 30px;
-                color: white;
-                text-align: center;
-            }
-
-/*            #navbar {
-                width: 380px;
-            }
-
-            #navbar .navbar-inner {
-                border-radius: 5px;
-            }
-*/
-        </style>
+        <script id="navlinks-template" type="text/x-handlebars-template">
+            <a class="brand" href="/">Lessons</a>
+            <ul class="nav">
+                {{#each navlinks}}
+                <li><a href="{{ link }}">{{ text }}</a></li>
+                {{/each}}
+            </ul>
+            <div class="btn-group pull-right">
+                <a class="btn disabled" href="#">
+                    <span class="icon-user"></span>
+                    User
+                </a>
+                <a class="btn disabled dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span class="icon-chevron-down"></span>
+                </a>
+            </div>
+        </script>
 
     </head>
 
@@ -190,173 +152,18 @@
         <div class="navbar navbar-fixed-top" id="navbar">
             <div class="navbar-inner">
                 <div class="container-fluid">
-                    <a class="brand" href="/">Lessons</a>
-                    <div class="btn-group pull-right">
-                        <a class="btn disabled" href="#">
-                            <span class="icon-user"></span>
-                            User
-                        </a>
-                        <a class="btn disabled dropdown-toggle" data-toggle="dropdown" href="#">
-                            <span class="icon-chevron-down"></span>
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
 
-<!--         <div class="navbar navbar-fixed-top" id="notifications">
-            <div class="navbar-inner">
-                <div class="container-fluid">
-                    Log in to save your progress!
-                </div>
-            </div>
-        </div> -->
-
-        <div class="meat" data-spy="scroll">
-            <div class="sidebar">
-                <ul class="navlist unstyled">
-                    <li class="completed">
-                        <a href="#video1">
-                            <i class="icon-film"></i>
-                            Video
-                            <i class="icon-ok pull-right success"></i>
-                        </a>
-                    </li>
-                    <li class="completed">
-                        <a href="#quiz1">
-                            <i class="icon-list-alt"></i>
-                            Quiz
-                        </a>
-                    </li>
-                    <li class="completed">
-                        <a href="#exploration1">
-                            <i class="icon-plane"></i>
-                            Exploration
-                            <i class="icon-adjust pull-right success"></i>
-                        </a>
-                    </li>
-                    <li class="completed">
-                        <a href="#exercise1">
-                            <i class="icon-bar-chart"></i>
-                            Exercise
-                            <i class="icon-ok-sign pull-right success"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#exercise2">
-                            <i class="icon-cogs"></i>
-                            Exercise
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#text1">
-                            <i class="icon-align-left"></i>
-                            Text
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="main">
-                <div class="node" id="video1">
-                    <div class="page-header">
-                        <h1>Video</h1>
-                    </div>
-                    <div class="node-content node-video">
-                        <iframe width="700" height="520" src="http://www.youtube.com/embed/YL10H_EcB-E" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                </div>
-                <div class="node" id="quiz1">
-                    <div class="page-header">
-                        <h1>Quiz</h1>
-                    </div>
-                    <div class="node-content node-quiz">
-                      <form>
-                        <div class="question">
-                          <h2>Question 1</h2>
-                          <p>A computer program is said to learn from experience E with respect to some task T and some performance measure P if its performance on T, as measured by P, improves with experience E. Suppose we feed a learning algorithm a lot of historical weather data, and have it learn to predict weather. In this setting, what is T?</p>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                    </div>
-                    <div class="question">
-                          <h2>Question 2</h2>
-                          <p>Suppose you are working on weather prediction, and your weather station makes one of three predictions for each day's weather: Sunny, Cloudy or Rainy. You'd like to use a learning algorithm to predict tomorrow's weather. Would you treat this as a classification or a regression problem?</p>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                    </div>
-                    <div class="question">
-                          <h2>Question 3</h2>
-                          <p>Suppose you are working on stock market prediction, Typically tens of millions of shares of Microsoft stock are traded (i.e., bought/sold) each day. You would like to predict the number of Microsoft shares that will be traded tomorrow. Would you treat this as a classification or a regression problem?</p>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                        <label class="radio">
-                          <input type="radio"> Option
-                        </label>
-                    </div>
-                        <button type="submit" class="btn btn-large">Check Answers</button>
-                      </form>
-                    </div>
-                </div>
-                <div class="node" id="exploration1">
-                    <div class="page-header">
-                        <h1>Exploration</h1>
-                    </div>
-                    <div class="node-content node-exploration">
-                        <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
-                    </div>
-                </div>
-                <div class="node" id="exercise1">
-                    <div class="page-header">
-                        <h1>Exercise</h1>
-                    </div>
-                    <div class="node-content node-exercise">
-                        <div class="question">
-                            Are the points E, I, and A coplanar?
-                        </div>
-                        <div class="figure">
-                            <img src="/images/exercise.png"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="extra">
-                <h1>Top Questions</h1>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <div id="viewer">
+            <div id="panel-holder">
+                <div class="panel" id="sidebar"></div>
+                <div class="resize" id="resize1"></div>
+                <div class="panel" id="main"></div>
+                <div class="resize" id="resize2"></div>
+                <div class="panel" id="extra">
+                    <h1>Questions</h1>
                 </div>
             </div>
         </div>
