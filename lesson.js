@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+    var lesson = "test";
+    var lessonDataPath = "../lessons/" + lesson + "/data.json";
+
     window.iconMap = {
         video: "icon-facetime-video",
         exploration: "icon-plane",
@@ -53,7 +56,7 @@ $(document).ready(function () {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "../data/sample-lesson.json",
+        url: lessonDataPath,
         success: addElems
     });
 
