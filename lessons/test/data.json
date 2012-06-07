@@ -1,0 +1,85 @@
+{
+    "title": "Linear perspective",
+    "category": "Art History",
+    
+    "modules":  [
+        {
+            "title": "Introduction to linear perspective",
+            "nodes": [0,1,2,3]
+        },
+        {
+            "title": "The 1300s - before the \"discovery\" of linear perspective",
+            "nodes": [0,1,2]
+        },
+        {
+            "title": "The 1400s in Florence - linear perspective is \"discovered\"",
+            "nodes": [0,1,2]
+        },
+        {
+            "title": "Linear perspective in painting and sculpture in Florence and beyond",
+            "nodes": [0,1,2]
+        }
+    ],
+
+    "nodeList":  {
+        "0":    {
+                    "id": 0,
+                    "title": "Recognizing the elements of linear perspective",
+                    "nodeType": "quiz",
+                    "problems": [
+                        {
+                            "prompt": "Suppose you are working on stock market prediction, Typically tens of millions of shares of Microsoft stock are traded (i.e., bought/sold) each day. You would like to predict the number of Microsoft shares that will be traded tomorrow. Would you treat this as a classification or a regression problem?",
+                            "options": [
+                                {
+                                    "content": "Option 1"
+                                },
+                                {
+                                    "content": "Option 2"
+                                },
+                                {
+                                    "content": "Option 3"
+                                }
+                            ]
+                        },
+                        {
+                            "prompt": "Suppose you are working on stock market prediction, Typically tens of millions of shares of Microsoft stock are traded (i.e., bought/sold) each day. You would like to predict the number of Microsoft shares that will be traded tomorrow. Would you treat this as a classification or a regression problem?",
+                            "options": [
+                                {
+                                    "content": "Option 1"
+                                },
+                                {
+                                    "content": "Option 2"
+                                },
+                                {
+                                    "content": "Option 3"
+                                }
+                            ]
+                        }
+                    ]
+                },
+        "1":    {
+
+                    "id": 1,
+                    "title": "Lorenzetti, Presentation of Jesus in the Temple",
+                    "nodeType": "video",
+                    "youtubeID": "_lzdhIHLwcQ"
+
+                },
+        "2":    {
+
+                    "id": 2,
+                    "title": "Visual vocabulary",
+                    "nodeType": "exercise",
+                    "prompt": "Are the points E, I, and A coplanar?",
+                    "html": "<img src='/images/exercise.png'/>"
+                },
+        "3":    {
+
+                    "id": 3,
+                    "title": "Some exploration",
+                    "nodeType": "exploration",
+                    "prompt": "Play around with this simulation!",
+                    "html": "<div id='vis'><script src='../lessons/test/apollonian-gasket.js'></script></div>"
+                }
+    }
+}
